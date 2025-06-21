@@ -89,7 +89,6 @@ def main():
         "mandrill": "mandrill.png",        # Highly textured image
         "smriti": "smriti.png",            # Additional test image
         "jeep": "jeep.png"                 # Additional test image
-
     }
     
     # Parse command line arguments if provided
