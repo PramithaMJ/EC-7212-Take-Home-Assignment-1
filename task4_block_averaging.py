@@ -12,16 +12,6 @@ import matplotlib.pyplot as plt
 import os
 
 def block_averaging(image, block_size):
-    """
-    Replace non-overlapping blocks with their average
-    
-    Args:
-        image (ndarray): Input image
-        block_size (int): Size of the blocks (e.g., 3, 5, 7)
-        
-    Returns:
-        ndarray: Image with block averaging applied
-    """
     height, width = image.shape
     result = np.copy(image).astype(np.float32)
     
@@ -40,16 +30,6 @@ def block_averaging(image, block_size):
     return result.astype(np.uint8)
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-    
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
@@ -86,10 +66,6 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    """
-    Main function to run block averaging
-    Command line usage: python task4_block_averaging.py [image_name]
-    """
     import sys
     
     # Define image options with paths relative to the 'images' directory
@@ -98,7 +74,6 @@ def main():
         "mandrill": "mandrill.png",        # Highly detailed - great for showing resolution effects
         "smriti": "smriti.png",            # Additional test image
         "jeep": "jeep.png"                 # Additional test image
-
     }
     
     # Parse command line arguments if provided

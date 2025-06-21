@@ -12,16 +12,6 @@ import matplotlib.pyplot as plt
 import os
 
 def spatial_averaging(image, kernel_size):
-    """
-    Perform spatial averaging on an image using a specified kernel size
-    
-    Args:
-        image (ndarray): Input image
-        kernel_size (int): Size of the averaging kernel (e.g., 3, 10, 20)
-        
-    Returns:
-        ndarray: Spatially averaged image
-    """
     # Create averaging kernel
     kernel = np.ones((kernel_size, kernel_size), dtype=np.float32) / (kernel_size * kernel_size)
     
@@ -31,16 +21,6 @@ def spatial_averaging(image, kernel_size):
     return averaged_image.astype(np.uint8)
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-    
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
@@ -77,10 +57,6 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    """
-    Main function to run spatial averaging
-    Command line usage: python task2_spatial_averaging.py [image_name]
-    """
     import sys
     
     # Define image options with paths relative to the 'images' directory

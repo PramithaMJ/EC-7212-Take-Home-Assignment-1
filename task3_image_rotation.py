@@ -11,16 +11,6 @@ import matplotlib.pyplot as plt
 import os
 
 def rotate_image(image, angle):
-    """
-    Rotate image by specified angle
-    
-    Args:
-        image (ndarray): Input image
-        angle (float): Rotation angle in degrees
-        
-    Returns:
-        ndarray: Rotated image
-    """
     # Get image dimensions
     height, width = image.shape
     
@@ -46,16 +36,6 @@ def rotate_image(image, angle):
     return rotated_image
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-    
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
@@ -92,10 +72,6 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    """
-    Main function to run image rotation
-    Command line usage: python task3_image_rotation.py [image_name]
-    """
     import sys
     
     # Define image options with paths relative to the 'images' directory
@@ -104,7 +80,6 @@ def main():
         "mandrill": "mandrill.png",        # Detailed image
         "smriti": "smriti.png",            # Additional test image
         "jeep": "jeep.png"                 # Additional test image
-
     }
     
     # Parse command line arguments if provided

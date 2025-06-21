@@ -26,16 +26,7 @@ def reduce_intensity_levels(image, n_levels):
     return reduced_image
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-    
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
+   
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
@@ -49,7 +40,7 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.axis('off')
         
         # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
+        if save_individual and individual_dir and i > 0:
             # Create safe filename from title
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
@@ -72,16 +63,11 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    """
-    Main function to run the intensity level reduction
-    Command line usage: python task1_intensity_reduction.py [image_name] [max_level] [min_level]
-    Interactive mode is used by default
-    """
     import sys
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image with good gradients
+        "lena": "lena_standard.png",       # Classic test image with good gradients
         "mandrill": "mandrill.png",        # Detailed texture
         "smriti": "smriti.png",            # Additional test image
         "jeep": "jeep.png"                 # Additional test image
@@ -189,16 +175,6 @@ def main():
     
     # Function to generate intensity levels from max_level down to min_level in powers of 2
     def generate_intensity_levels(max_level=256, min_level=2):
-        """
-        Generate a list of intensity levels in powers of 2, from max_level down to min_level
-        
-        Args:
-            max_level (int): Maximum intensity level (default: 256)
-            min_level (int): Minimum intensity level (default: 2)
-            
-        Returns:
-            list: List of intensity levels in descending order
-        """
         levels = []
         current_level = max_level // 2  # Start from max_level/2 since max_level is the original
         
@@ -208,9 +184,7 @@ def main():
             
         return levels
     
-    # Intensity level reduction - use the max_level and min_level from command line arguments or interactive input
-    # Note: These values are already set from command line arguments or defaults
-    
+    # Intensity level reduction - use the max_level and min_level from command line arguments or interactive input    
     # Check if we're in single-level mode (from interactive input)
     if interactive_mode and max_level > min_level:
         # For interactive mode, just use the specific level
