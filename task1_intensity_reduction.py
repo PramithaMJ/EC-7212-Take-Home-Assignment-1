@@ -35,14 +35,16 @@ def reduce_intensity_levels(image, n_levels):
     
     return reduced_image
 
-def display_results(images, titles, save_path=None):
+def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
     """
-    Display multiple images in a grid
+    Display multiple images in a grid and optionally save individual images
     
     Args:
         images (list): List of images to display
         titles (list): List of titles for each image
         save_path (str, optional): Path to save the figure
+        save_individual (bool, optional): Whether to save individual images
+        individual_dir (str, optional): Directory to save individual images
     """
     n_images = len(images)
     cols = min(3, n_images)
@@ -55,6 +57,22 @@ def display_results(images, titles, save_path=None):
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
+        
+        # Save individual images if requested
+        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
+            # Create safe filename from title
+            safe_title = title.replace(' ', '_').replace('(', '').replace(')', '')
+            img_path = os.path.join(individual_dir, f"{safe_title}.png")
+            
+            # Create individual figure and save
+            plt.figure(figsize=(5, 5))
+            plt.imshow(img, cmap='gray')
+            plt.title(title)
+            plt.axis('off')
+            plt.tight_layout()
+            plt.savefig(img_path, dpi=300, bbox_inches='tight')
+            plt.close()  # Close individual figure
+            print(f"Saved individual image: {img_path}")
     
     plt.tight_layout()
     
@@ -172,11 +190,26 @@ def main():
         intensity_titles.append(f"{n_levels} levels")
         print(f"Reduced to {n_levels} intensity levels")
     
+    # Create a subdirectory for individual images
+    task_dir = os.path.join(results_dir, f"task1_{selected_image}")
+    if not os.path.exists(task_dir):
+        os.makedirs(task_dir)
+        print(f"Created directory for individual images: {task_dir}")
+    
     # Display and save results
     result_filename = f"task1_{selected_image}_intensity_reduction.png"
     result_path = os.path.join(results_dir, result_filename)
-    display_results(intensity_images, intensity_titles, result_path)
+    
+    # Save both the combined image and individual images
+    display_results(
+        intensity_images, 
+        intensity_titles, 
+        save_path=result_path,
+        save_individual=True,
+        individual_dir=task_dir
+    )
     print(f"Results saved as {result_path}")
+    print(f"Individual images saved in {task_dir}")
 
 def print_usage():
     """Print usage instructions"""

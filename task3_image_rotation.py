@@ -45,14 +45,16 @@ def rotate_image(image, angle):
     
     return rotated_image
 
-def display_results(images, titles, save_path=None):
+def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
     """
-    Display multiple images in a grid
+    Display multiple images in a grid and optionally save individual images
     
     Args:
         images (list): List of images to display
         titles (list): List of titles for each image
         save_path (str, optional): Path to save the figure
+        save_individual (bool, optional): Whether to save individual images
+        individual_dir (str, optional): Directory to save individual images
     """
     n_images = len(images)
     cols = min(3, n_images)
@@ -65,6 +67,22 @@ def display_results(images, titles, save_path=None):
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
+        
+        # Save individual images if requested
+        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
+            # Create safe filename from title
+            safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('°', 'deg')
+            img_path = os.path.join(individual_dir, f"{safe_title}.png")
+            
+            # Create individual figure and save
+            plt.figure(figsize=(5, 5))
+            plt.imshow(img, cmap='gray')
+            plt.title(title)
+            plt.axis('off')
+            plt.tight_layout()
+            plt.savefig(img_path, dpi=300, bbox_inches='tight')
+            plt.close()  # Close individual figure
+            print(f"Saved individual image: {img_path}")
     
     plt.tight_layout()
     
@@ -74,6 +92,12 @@ def display_results(images, titles, save_path=None):
     plt.show()
 
 def main():
+    """
+    Main function to run image rotation
+    Command line usage: python task3_image_rotation.py [image_name]
+    """
+    import sys
+    
     # Define image options with paths relative to the 'images' directory
     image_options = {
         "lena": "Lenna_(test_image).png",  # Classic test image
@@ -82,8 +106,17 @@ def main():
         "moon": "moon.tif"                 # Circular object - interesting for rotation
     }
     
-    # Select the image to use
+    # Parse command line arguments if provided
+    args = sys.argv[1:]
+    
+    # Default value
     selected_image = "lena"
+    
+    # Process command line arguments if provided
+    if len(args) >= 1 and args[0] in image_options:
+        selected_image = args[0]
+        print(f"Using specified image: {selected_image}")
+    
     image_filename = image_options[selected_image]
     
     # Get absolute paths for images and results folders
@@ -118,11 +151,39 @@ def main():
         rotation_titles.append(f"Rotated {angle}°")
         print(f"Rotated image by {angle} degrees")
     
+    # Create a subdirectory for individual images
+    task_dir = os.path.join(results_dir, f"task3_{selected_image}")
+    if not os.path.exists(task_dir):
+        os.makedirs(task_dir)
+        print(f"Created directory for individual images: {task_dir}")
+    
     # Display and save results
     result_filename = f"task3_{selected_image}_rotation.png"
     result_path = os.path.join(results_dir, result_filename)
-    display_results(rotation_images, rotation_titles, result_path)
+    
+    # Save both the combined image and individual images
+    display_results(
+        rotation_images, 
+        rotation_titles, 
+        save_path=result_path,
+        save_individual=True,
+        individual_dir=task_dir
+    )
     print(f"Results saved as {result_path}")
+    print(f"Individual images saved in {task_dir}")
+
+def print_usage():
+    """Print usage instructions"""
+    print("\nUsage: python3 task3_image_rotation.py [image_name]")
+    print("\nArguments:")
+    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("\nExample:")
+    print("  python3 task3_image_rotation.py lena")
+    print("  python3 task3_image_rotation.py mandrill")
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
+        print_usage()
+    else:
+        main()
