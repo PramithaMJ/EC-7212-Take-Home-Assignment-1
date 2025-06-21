@@ -184,10 +184,10 @@ def block_averaging(image, block_size):
         for j in range(0, width - block_size + 1, block_size):
             # Extract block
             block = image[i:i+block_size, j:j+block_size]
-      
+    
             # Calculate average
             avg_value = np.mean(block)
-      
+    
             # Replace all pixels in block with average
             result[i:i+block_size, j:j+block_size] = avg_value
   
@@ -238,7 +238,7 @@ Example: `python3 task3_image_rotation.py smriti`
 python3 task4_block_averaging.py [image_name]
 ```
 
-Example: `python3 task4_block_averaging.py mandrill`
+Example: `python3 task4_block_averaging.py jeep`
 
 ## Conclusion
 
@@ -270,194 +270,181 @@ import matplotlib.pyplot as plt
 import os
 
 def reduce_intensity_levels(image, n_levels):
-    """
-    Reduce intensity levels from 256 to specified number (power of 2)
-  
-    Args:
-        image (ndarray): Input image
-        n_levels (int): Desired number of intensity levels (must be power of 2)
-  
-    Returns:
-        ndarray: Image with reduced intensity levels
-    """
-    # Validate input
     if n_levels <= 0 or (n_levels & (n_levels - 1)) != 0:
         raise ValueError("Number of levels must be a positive power of 2")
-  
-    # Calculate the number of bits needed
+    
     bits = int(np.log2(n_levels))
-  
-    # Reduce intensity levels
-    # Shift right to reduce bits, then shift left to restore range
+    
     reduced_image = (image >> (8 - bits)) << (8 - bits)
-  
+    
     return reduced_image
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-  
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
+   
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
-  
+    
     plt.figure(figsize=(15, 5 * rows))
-  
+    
     for i, (img, title) in enumerate(zip(images, titles)):
         plt.subplot(rows, cols, i + 1)
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-  
-        # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
-            # Create safe filename from title
+        
+        if save_individual and individual_dir and i > 0:
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-      
-            # Create individual figure and save
+            
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
             plt.title(title)
             plt.axis('off')
             plt.tight_layout()
             plt.savefig(img_path, dpi=300, bbox_inches='tight')
-            plt.close()  # Close individual figure
+            plt.close()
             print(f"Saved individual image: {img_path}")
-  
+    
     plt.tight_layout()
-  
+    
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-  
+    
     plt.show()
 
 def main():
-    """
-    Main function to run the intensity level reduction
-    Command line usage: python task1_intensity_reduction.py [image_name] [max_level] [min_level]
-    """
     import sys
-  
-    # Define image options with paths relative to the 'images' directory
+    
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image with good gradients
-        "mandrill": "mandrill.png",        # Detailed texture
-        "smriti": "smriti.png"             # Additional test image
+        "lena": "lena_standard.png",
+        "mandrill": "mandrill.png",
+        "smriti": "smriti.png",
+        "jeep": "jeep.png"
+
     }
-  
-    # Parse command line arguments if provided
+    
     args = sys.argv[1:]
-  
-    # Default values
-    selected_image = "mandrill"
-    max_level = 256
-    min_level = 2
-  
-    # Process command line arguments if provided
+    
+    if len(args) >= 1 and args[0] in image_options:
+        interactive_mode = False
+    else:
+        interactive_mode = True
+    
+    if interactive_mode:
+        print("\n=== Interactive Intensity Level Reduction ===\n")
+        
+        print("Available images:")
+        for i, (name, _) in enumerate(image_options.items(), 1):
+            print(f"  {i}. {name}")
+        
+        while True:
+            try:
+                img_choice = int(input("\nSelect image number: "))
+                if 1 <= img_choice <= len(image_options):
+                    selected_image = list(image_options.keys())[img_choice - 1]
+                    break
+                else:
+                    print(f"Please enter a number between 1 and {len(image_options)}")
+            except ValueError:
+                print("Please enter a valid number")
+        
+        while True:
+            try:
+                desired_level = int(input("\nEnter desired intensity levels (e.g., 2, 4, 8... 256): "))
+                if desired_level > 0 and (desired_level & (desired_level - 1)) == 0 and desired_level <= 256:
+                    break
+                else:
+                    print("Please enter a positive power of 2 no greater than 256")
+            except ValueError:
+                print("Please enter a valid number")
+        
+        max_level = 256
+        min_level = desired_level
+        
+        print(f"\nSelected image: {selected_image}")
+        print(f"Reducing intensity to {desired_level} levels\n")
+    else:
+        # Default values
+        selected_image = "jeep"
+        max_level = 256
+        min_level = 2
+    
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
         print(f"Using specified image: {selected_image}")
-  
+    
     if len(args) >= 3:
         try:
             max_level = int(args[1])
             min_level = int(args[2])
-      
-            # Ensure max_level is 256 or less (8-bit images)
+            
             max_level = min(max_level, 256)
-      
-            # Ensure min_level is at least 2
+            
             min_level = max(min_level, 2)
-      
+            
             print(f"Using specified levels: max={max_level}, min={min_level}")
         except ValueError:
             print("Invalid level values. Using defaults: max=256, min=2")
-  
+    
     image_filename = image_options[selected_image]
-  
-    # Get absolute paths for images and results folders
+    
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
     results_dir = os.path.join(current_dir, "results")
-  
-    # Create results directory if it doesn't exist
+    
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
-  
-    # Full path to the image file
+    
     image_path = os.path.join(images_dir, image_filename)
-  
+    
     print(f"Attempting to load image from: {image_path}")
-  
-    # Load the image
+    
     original_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if original_image is None:
         raise ValueError(f"Could not load image from {image_path}")
-  
+    
     print(f"Image loaded successfully: {original_image.shape}")
-  
-    # Function to generate intensity levels from max_level down to min_level in powers of 2
+    
     def generate_intensity_levels(max_level=256, min_level=2):
-        """
-        Generate a list of intensity levels in powers of 2, from max_level down to min_level
-  
-        Args:
-            max_level (int): Maximum intensity level (default: 256)
-            min_level (int): Minimum intensity level (default: 2)
-      
-        Returns:
-            list: List of intensity levels in descending order
-        """
         levels = []
-        current_level = max_level // 2  # Start from max_level/2 since max_level is the original
-  
+        current_level = max_level // 2
+        
         while current_level >= min_level:
             levels.append(current_level)
             current_level = current_level // 2
-      
+            
         return levels
-  
-    # Intensity level reduction - use the max_level and min_level from command line arguments
-    # Note: These values are already set from command line arguments or defaults
-  
-    # Generate levels dynamically instead of hardcoding
-    levels_to_test = generate_intensity_levels(max_level, min_level)
-    print(f"Testing intensity levels: {levels_to_test}")
-  
+    
+    if interactive_mode and max_level > min_level:
+        levels_to_test = [min_level]
+        print(f"Testing single intensity level: {min_level}")
+    else:
+        levels_to_test = generate_intensity_levels(max_level, min_level)
+        print(f"Testing intensity levels: {levels_to_test}")
+    
     intensity_images = [original_image]
     intensity_titles = [f"Original ({max_level} levels)"]
-  
-    # Validate intensity levels
+    
     for level in levels_to_test:
-        if not (level & (level - 1) == 0):  # Check if power of 2
+        if not (level & (level - 1) == 0):
             print(f"Warning: {level} is not a power of 2, skipping...")
             continue
-  
+    
     for n_levels in levels_to_test:
         reduced = reduce_intensity_levels(original_image, n_levels)
         intensity_images.append(reduced)
         intensity_titles.append(f"{n_levels} levels")
         print(f"Reduced to {n_levels} intensity levels")
-  
-    # Create a subdirectory for individual images
+    
     task_dir = os.path.join(results_dir, f"task1_{selected_image}")
     if not os.path.exists(task_dir):
         os.makedirs(task_dir)
         print(f"Created directory for individual images: {task_dir}")
-  
-    # Display and save results
+    
     result_filename = f"task1_{selected_image}_intensity_reduction.png"
     result_path = os.path.join(results_dir, result_filename)
-  
-    # Save both the combined image and individual images
+    
     display_results(
         intensity_images, 
         intensity_titles, 
@@ -471,13 +458,15 @@ def main():
 def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task1_intensity_reduction.py [image_name] [max_level] [min_level]")
+    print("       python3 task1_intensity_reduction.py")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti, jeep)")
     print("  max_level     : Maximum intensity level (default: 256)")
     print("  min_level     : Minimum intensity level (default: 2)")
+    print("  [no arguments]: Interactive mode - prompts for image and specific intensity level")
     print("\nExample:")
     print("  python3 task1_intensity_reduction.py lena 256 2")
-    print("  python3 task1_intensity_reduction.py mandrill 256 2")
+    print("  python3 task1_intensity_reduction.py")
 
 if __name__ == "__main__":
     import sys
@@ -485,6 +474,7 @@ if __name__ == "__main__":
         print_usage()
     else:
         main()
+
 ```
 
 ### Task 2: Spatial Averaging (task2_spatial_averaging.py)
@@ -504,140 +494,99 @@ import matplotlib.pyplot as plt
 import os
 
 def spatial_averaging(image, kernel_size):
-    """
-    Perform spatial averaging on an image using a specified kernel size
-  
-    Args:
-        image (ndarray): Input image
-        kernel_size (int): Size of the averaging kernel (e.g., 3, 10, 20)
-  
-    Returns:
-        ndarray: Spatially averaged image
-    """
-    # Create averaging kernel
     kernel = np.ones((kernel_size, kernel_size), dtype=np.float32) / (kernel_size * kernel_size)
-  
-    # Apply convolution
+    
     averaged_image = cv2.filter2D(image, -1, kernel)
-  
+    
     return averaged_image.astype(np.uint8)
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-  
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
-  
+    
     plt.figure(figsize=(15, 5 * rows))
-  
+    
     for i, (img, title) in enumerate(zip(images, titles)):
         plt.subplot(rows, cols, i + 1)
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-  
-        # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
-            # Create safe filename from title
+        
+        if save_individual and individual_dir and i > 0:
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('×', 'x')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-      
-            # Create individual figure and save
+            
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
             plt.title(title)
             plt.axis('off')
             plt.tight_layout()
             plt.savefig(img_path, dpi=300, bbox_inches='tight')
-            plt.close()  # Close individual figure
+            plt.close()
             print(f"Saved individual image: {img_path}")
-  
+    
     plt.tight_layout()
-  
+    
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-  
+    
     plt.show()
 
 def main():
-    """
-    Main function to run spatial averaging
-    Command line usage: python task2_spatial_averaging.py [image_name]
-    """
     import sys
-  
-    # Define image options with paths relative to the 'images' directory
+    
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image with good gradients
-        "mandrill": "mandrill.png",        # Highly textured image
-        "smriti": "smriti.png"             # Additional test image
+        "lena": "lena_standard.png",
+        "mandrill": "mandrill.png",
+        "smriti": "smriti.png",
+        "jeep": "jeep.png"
     }
-  
-    # Parse command line arguments if provided
+    
     args = sys.argv[1:]
-  
-    # Default value
-    selected_image = "lena"  # Cameraman is good for showing edge effects
-  
-    # Process command line arguments if provided
+    
+    selected_image = "jeep"
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
         print(f"Using specified image: {selected_image}")
-  
+    
     image_filename = image_options[selected_image]
-  
-    # Get absolute paths for images and results folders
+    
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
     results_dir = os.path.join(current_dir, "results")
-  
-    # Create results directory if it doesn't exist
+    
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
-  
-    # Full path to the image file
+    
     image_path = os.path.join(images_dir, image_filename)
-  
+    
     print(f"Attempting to load image from: {image_path}")
-  
-    # Load the image
+    
     original_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if original_image is None:
         raise ValueError(f"Could not load image from {image_path}")
-  
+    
     print(f"Image loaded successfully: {original_image.shape}")
-  
-    # Task 2: Spatial averaging
+    
     kernel_sizes = [3, 10, 20]
     averaging_images = [original_image]
     averaging_titles = ["Original"]
-  
+    
     for kernel_size in kernel_sizes:
         averaged = spatial_averaging(original_image, kernel_size)
         averaging_images.append(averaged)
         averaging_titles.append(f"{kernel_size}x{kernel_size} Average")
         print(f"Applied {kernel_size}x{kernel_size} spatial averaging")
-  
-    # Create a subdirectory for individual images
+    
     task_dir = os.path.join(results_dir, f"task2_{selected_image}")
     if not os.path.exists(task_dir):
         os.makedirs(task_dir)
         print(f"Created directory for individual images: {task_dir}")
-  
-    # Display and save results
+    
     result_filename = f"task2_{selected_image}_spatial_averaging.png"
     result_path = os.path.join(results_dir, result_filename)
-  
-    # Save both the combined image and individual images
+    
     display_results(
         averaging_images, 
         averaging_titles, 
@@ -663,6 +612,7 @@ if __name__ == "__main__":
         print_usage()
     else:
         main()
+
 ```
 
 ### Task 3: Image Rotation (task3_image_rotation.py)
@@ -681,156 +631,113 @@ import matplotlib.pyplot as plt
 import os
 
 def rotate_image(image, angle):
-    """
-    Rotate image by specified angle
-  
-    Args:
-        image (ndarray): Input image
-        angle (float): Rotation angle in degrees
-  
-    Returns:
-        ndarray: Rotated image
-    """
-    # Get image dimensions
     height, width = image.shape
-  
-    # Calculate rotation matrix
+    
     center = (width // 2, height // 2)
     rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-  
-    # Calculate new dimensions to avoid cropping
+    
     cos_angle = np.abs(rotation_matrix[0, 0])
     sin_angle = np.abs(rotation_matrix[0, 1])
     new_width = int(height * sin_angle + width * cos_angle)
     new_height = int(height * cos_angle + width * sin_angle)
-  
-    # Adjust rotation matrix for new dimensions
+    
     rotation_matrix[0, 2] += (new_width - width) / 2
     rotation_matrix[1, 2] += (new_height - height) / 2
-  
-    # Apply rotation
+    
     rotated_image = cv2.warpAffine(image, rotation_matrix, 
                                  (new_width, new_height), 
                                  borderValue=0)
-  
+    
     return rotated_image
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-  
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
-  
+    
     plt.figure(figsize=(15, 5 * rows))
-  
+    
     for i, (img, title) in enumerate(zip(images, titles)):
         plt.subplot(rows, cols, i + 1)
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-  
-        # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
-            # Create safe filename from title
+        
+        if save_individual and individual_dir and i > 0:
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('°', 'deg')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-      
-            # Create individual figure and save
+            
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
             plt.title(title)
             plt.axis('off')
             plt.tight_layout()
             plt.savefig(img_path, dpi=300, bbox_inches='tight')
-            plt.close()  # Close individual figure
+            plt.close()
             print(f"Saved individual image: {img_path}")
-  
+    
     plt.tight_layout()
-  
+    
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-  
+    
     plt.show()
 
 def main():
-    """
-    Main function to run image rotation
-    Command line usage: python task3_image_rotation.py [image_name]
-    """
     import sys
-  
-    # Define image options with paths relative to the 'images' directory
+    
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image
-        "mandrill": "mandrill.png",        # Detailed image
-        "smriti": "smriti.png"             # Additional test image
+        "lena": "lena_standard.png",
+        "mandrill": "mandrill.png",
+        "smriti": "smriti.png",
+        "jeep": "jeep.png" 
     }
-  
-    # Parse command line arguments if provided
+    
     args = sys.argv[1:]
-  
-    # Default value
-    selected_image = "lena"
-  
-    # Process command line arguments if provided
+    
+    selected_image = "jeep"
+    
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
         print(f"Using specified image: {selected_image}")
-  
+    
     image_filename = image_options[selected_image]
-  
-    # Get absolute paths for images and results folders
+    
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
     results_dir = os.path.join(current_dir, "results")
-  
-    # Create results directory if it doesn't exist
+    
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
-  
-    # Full path to the image file
+    
     image_path = os.path.join(images_dir, image_filename)
-  
+    
     print(f"Attempting to load image from: {image_path}")
-  
-    # Load the image
+    
     original_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if original_image is None:
         raise ValueError(f"Could not load image from {image_path}")
-  
+    
     print(f"Image loaded successfully: {original_image.shape}")
-  
-    # Task 3: Image rotation
+    
     angles = [45, 90]
     rotation_images = [original_image]
     rotation_titles = ["Original"]
-  
+    
     for angle in angles:
         rotated = rotate_image(original_image, angle)
         rotation_images.append(rotated)
         rotation_titles.append(f"Rotated {angle}°")
         print(f"Rotated image by {angle} degrees")
-  
-    # Create a subdirectory for individual images
+    
     task_dir = os.path.join(results_dir, f"task3_{selected_image}")
     if not os.path.exists(task_dir):
         os.makedirs(task_dir)
         print(f"Created directory for individual images: {task_dir}")
-  
-    # Display and save results
+    
     result_filename = f"task3_{selected_image}_rotation.png"
     result_path = os.path.join(results_dir, result_filename)
-  
-    # Save both the combined image and individual images
+    
     display_results(
         rotation_images, 
         rotation_titles, 
@@ -856,6 +763,7 @@ if __name__ == "__main__":
         print_usage()
     else:
         main()
+
 ```
 
 ### Task 4: Block Averaging (task4_block_averaging.py)
@@ -875,149 +783,107 @@ import matplotlib.pyplot as plt
 import os
 
 def block_averaging(image, block_size):
-    """
-    Replace non-overlapping blocks with their average
-  
-    Args:
-        image (ndarray): Input image
-        block_size (int): Size of the blocks (e.g., 3, 5, 7)
-  
-    Returns:
-        ndarray: Image with block averaging applied
-    """
     height, width = image.shape
     result = np.copy(image).astype(np.float32)
-  
-    # Process blocks
+    
     for i in range(0, height - block_size + 1, block_size):
         for j in range(0, width - block_size + 1, block_size):
-            # Extract block
             block = image[i:i+block_size, j:j+block_size]
-      
-            # Calculate average
+            
             avg_value = np.mean(block)
-      
-            # Replace all pixels in block with average
+            
             result[i:i+block_size, j:j+block_size] = avg_value
-  
+    
     return result.astype(np.uint8)
 
 def display_results(images, titles, save_path=None, save_individual=False, individual_dir=None):
-    """
-    Display multiple images in a grid and optionally save individual images
-  
-    Args:
-        images (list): List of images to display
-        titles (list): List of titles for each image
-        save_path (str, optional): Path to save the figure
-        save_individual (bool, optional): Whether to save individual images
-        individual_dir (str, optional): Directory to save individual images
-    """
     n_images = len(images)
     cols = min(3, n_images)
     rows = (n_images + cols - 1) // cols
-  
+    
     plt.figure(figsize=(15, 5 * rows))
-  
+    
     for i, (img, title) in enumerate(zip(images, titles)):
         plt.subplot(rows, cols, i + 1)
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-  
-        # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
-            # Create safe filename from title
+        
+        if save_individual and individual_dir and i > 0:
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('×', 'x')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-      
-            # Create individual figure and save
+            
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
             plt.title(title)
             plt.axis('off')
             plt.tight_layout()
             plt.savefig(img_path, dpi=300, bbox_inches='tight')
-            plt.close()  # Close individual figure
+            plt.close()
             print(f"Saved individual image: {img_path}")
-  
+    
     plt.tight_layout()
-  
+    
     if save_path:
         plt.savefig(save_path, dpi=300, bbox_inches='tight')
-  
+    
     plt.show()
 
 def main():
-    """
-    Main function to run block averaging
-    Command line usage: python task4_block_averaging.py [image_name]
-    """
     import sys
-  
-    # Define image options with paths relative to the 'images' directory
+    
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image
-        "mandrill": "mandrill.png",        # Highly detailed - great for showing resolution effects
-        "smriti": "smriti.png"             # Additional test image
+        "lena": "lena_standard.png",
+        "mandrill": "mandrill.png",
+        "smriti": "smriti.png",
+        "jeep": "jeep.png"
     }
-  
-    # Parse command line arguments if provided
+    
     args = sys.argv[1:]
-  
-    # Default value
-    selected_image = "lena"
-  
-    # Process command line arguments if provided
+    
+    selected_image = "jeep"
+    
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
         print(f"Using specified image: {selected_image}")
-  
+    
     image_filename = image_options[selected_image]
-  
-    # Get absolute paths for images and results folders
+    
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
     results_dir = os.path.join(current_dir, "results")
-  
-    # Create results directory if it doesn't exist
+    
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
-  
-    # Full path to the image file
+    
     image_path = os.path.join(images_dir, image_filename)
-  
+    
     print(f"Attempting to load image from: {image_path}")
-  
-    # Load the image
+    
     original_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if original_image is None:
         raise ValueError(f"Could not load image from {image_path}")
-  
+    
     print(f"Image loaded successfully: {original_image.shape}")
-  
-    # Task 4: Block averaging
+    
     block_sizes = [3, 5, 7]
     block_images = [original_image]
     block_titles = ["Original"]
-  
+    
     for block_size in block_sizes:
         block_averaged = block_averaging(original_image, block_size)
         block_images.append(block_averaged)
         block_titles.append(f"{block_size}x{block_size} Blocks")
         print(f"Applied {block_size}x{block_size} block averaging")
-  
-    # Create a subdirectory for individual images
+    
     task_dir = os.path.join(results_dir, f"task4_{selected_image}")
     if not os.path.exists(task_dir):
         os.makedirs(task_dir)
         print(f"Created directory for individual images: {task_dir}")
-  
-    # Display and save results
+    
     result_filename = f"task4_{selected_image}_block_averaging.png"
     result_path = os.path.join(results_dir, result_filename)
-  
-    # Save both the combined image and individual images
+    
     display_results(
         block_images, 
         block_titles, 
@@ -1035,7 +901,6 @@ def print_usage():
     print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("\nExample:")
     print("  python3 task4_block_averaging.py lena")
-    print("  python3 task4_block_averaging.py mandrill")
 
 if __name__ == "__main__":
     import sys

@@ -15,16 +15,12 @@ def block_averaging(image, block_size):
     height, width = image.shape
     result = np.copy(image).astype(np.float32)
     
-    # Process blocks
     for i in range(0, height - block_size + 1, block_size):
         for j in range(0, width - block_size + 1, block_size):
-            # Extract block
             block = image[i:i+block_size, j:j+block_size]
             
-            # Calculate average
             avg_value = np.mean(block)
             
-            # Replace all pixels in block with average
             result[i:i+block_size, j:j+block_size] = avg_value
     
     return result.astype(np.uint8)
@@ -42,20 +38,17 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.title(title)
         plt.axis('off')
         
-        # Save individual images if requested
-        if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
-            # Create safe filename from title
+        if save_individual and individual_dir and i > 0:
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('×', 'x')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
             
-            # Create individual figure and save
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
             plt.title(title)
             plt.axis('off')
             plt.tight_layout()
             plt.savefig(img_path, dpi=300, bbox_inches='tight')
-            plt.close()  # Close individual figure
+            plt.close()
             print(f"Saved individual image: {img_path}")
     
     plt.tight_layout()
@@ -68,49 +61,40 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
 def main():
     import sys
     
-    # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image
-        "mandrill": "mandrill.png",        # Highly detailed - great for showing resolution effects
-        "smriti": "smriti.png",            # Additional test image
-        "jeep": "jeep.png"                 # Additional test image
+        "lena": "lena_standard.png",
+        "mandrill": "mandrill.png",
+        "smriti": "smriti.png",
+        "jeep": "jeep.png"
     }
     
-    # Parse command line arguments if provided
     args = sys.argv[1:]
     
-    # Default value
     selected_image = "jeep"
     
-    # Process command line arguments if provided
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
         print(f"Using specified image: {selected_image}")
     
     image_filename = image_options[selected_image]
     
-    # Get absolute paths for images and results folders
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
     results_dir = os.path.join(current_dir, "results")
     
-    # Create results directory if it doesn't exist
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
     
-    # Full path to the image file
     image_path = os.path.join(images_dir, image_filename)
     
     print(f"Attempting to load image from: {image_path}")
     
-    # Load the image
     original_image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     if original_image is None:
         raise ValueError(f"Could not load image from {image_path}")
     
     print(f"Image loaded successfully: {original_image.shape}")
     
-    # Task 4: Block averaging
     block_sizes = [3, 5, 7]
     block_images = [original_image]
     block_titles = ["Original"]
@@ -121,17 +105,14 @@ def main():
         block_titles.append(f"{block_size}x{block_size} Blocks")
         print(f"Applied {block_size}x{block_size} block averaging")
     
-    # Create a subdirectory for individual images
     task_dir = os.path.join(results_dir, f"task4_{selected_image}")
     if not os.path.exists(task_dir):
         os.makedirs(task_dir)
         print(f"Created directory for individual images: {task_dir}")
     
-    # Display and save results
     result_filename = f"task4_{selected_image}_block_averaging.png"
     result_path = os.path.join(results_dir, result_filename)
     
-    # Save both the combined image and individual images
     display_results(
         block_images, 
         block_titles, 
@@ -149,7 +130,6 @@ def print_usage():
     print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("\nExample:")
     print("  python3 task4_block_averaging.py lena")
-    print("  python3 task4_block_averaging.py mandrill")
 
 if __name__ == "__main__":
     import sys
