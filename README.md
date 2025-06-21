@@ -7,16 +7,14 @@ This project implements various image processing operations required for the EC7
 ```
 .
 ├── images/                 # Input images
-│   ├── Lenna_(test_image).png
-│   ├── cameraman.tif
 │   ├── lena_standard.png
 │   ├── mandrill.png
-│   └── moon.tif
+│   └── smriti.png
 ├── results/                # Output images
 │   ├── task1_lena_intensity_reduction.png
-│   ├── task2_cameraman_spatial_averaging.png
+│   ├── task2_lena_spatial_averaging.png
 │   ├── task3_lena_rotation.png
-│   └── task4_mandrill_block_averaging.png
+│   └── task4_lena_block_averaging.png
 ├── task1_intensity_reduction.py
 ├── task2_spatial_averaging.py
 ├── task3_image_rotation.py
@@ -27,18 +25,19 @@ This project implements various image processing operations required for the EC7
 ## Task Descriptions
 
 1. **Task 1: Intensity Level Reduction** (`task1_intensity_reduction.py`)
+
    - Reduces the number of intensity levels in an image from 256 to a specified power of 2
    - Tests with levels: 128, 64, 32, 16, 8, 4, 2
-
 2. **Task 2: Spatial Averaging** (`task2_spatial_averaging.py`)
+
    - Performs spatial averaging with different neighborhood sizes
    - Tests with kernel sizes: 3×3, 10×10, 20×20
-
 3. **Task 3: Image Rotation** (`task3_image_rotation.py`)
+
    - Rotates an image by 45 and 90 degrees
    - Preserves all image content without cropping
-
 4. **Task 4: Block Averaging** (`task4_block_averaging.py`)
+
    - Reduces spatial resolution by replacing non-overlapping blocks with their average
    - Tests with block sizes: 3×3, 5×5, 7×7
 

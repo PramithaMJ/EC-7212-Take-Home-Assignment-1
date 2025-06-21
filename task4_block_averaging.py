@@ -96,14 +96,16 @@ def main():
     image_options = {
         "lena": "lena_standard.png",      # Classic test image
         "mandrill": "mandrill.png",        # Highly detailed - great for showing resolution effects
-        "smriti": "smriti.png"             # Additional test image
+        "smriti": "smriti.png",            # Additional test image
+        "jeep": "jeep.png"                 # Additional test image
+
     }
     
     # Parse command line arguments if provided
     args = sys.argv[1:]
     
     # Default value
-    selected_image = "lena"
+    selected_image = "jeep"
     
     # Process command line arguments if provided
     if len(args) >= 1 and args[0] in image_options:

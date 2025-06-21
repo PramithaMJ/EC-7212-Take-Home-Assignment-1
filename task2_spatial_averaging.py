@@ -85,17 +85,18 @@ def main():
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "lena_standard.png",      # Classic test image with good gradients
+        "lena": "lena_standard.png",       # Classic test image with good gradients
         "mandrill": "mandrill.png",        # Highly textured image
-        "smriti": "smriti.png"             # Additional test image
+        "smriti": "smriti.png",            # Additional test image
+        "jeep": "jeep.png"                 # Additional test image
+
     }
     
     # Parse command line arguments if provided
     args = sys.argv[1:]
     
     # Default value
-    selected_image = "lena"  # Cameraman is good for showing edge effects
-    
+    selected_image = "jeep"
     # Process command line arguments if provided
     if len(args) >= 1 and args[0] in image_options:
         selected_image = args[0]
