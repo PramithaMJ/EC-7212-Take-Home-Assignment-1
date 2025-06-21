@@ -90,17 +90,16 @@ def main():
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "Lenna_(test_image).png",  # Classic test image with good gradients
-        "cameraman": "cameraman.tif",      # Good contrast
+        "lena": "lena_standard.png",      # Classic test image with good gradients
         "mandrill": "mandrill.png",        # Detailed texture
-        "moon": "moon.tif"                 # Grayscale with interesting features
+        "smriti": "smriti.png"             # Additional test image
     }
     
     # Parse command line arguments if provided
     args = sys.argv[1:]
     
     # Default values
-    selected_image = "lena"
+    selected_image = "mandrill"
     max_level = 256
     min_level = 2
     
@@ -215,12 +214,12 @@ def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task1_intensity_reduction.py [image_name] [max_level] [min_level]")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("  max_level     : Maximum intensity level (default: 256)")
     print("  min_level     : Minimum intensity level (default: 2)")
     print("\nExample:")
     print("  python3 task1_intensity_reduction.py lena 256 2")
-    print("  python3 task1_intensity_reduction.py cameraman 128 1")
+    print("  python3 task1_intensity_reduction.py mandrill 256 2")
 
 if __name__ == "__main__":
     import sys

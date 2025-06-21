@@ -94,10 +94,9 @@ def main():
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "Lenna_(test_image).png",  # Classic test image
-        "cameraman": "cameraman.tif",      # Good for showing detail loss
+        "lena": "lena_standard.png",      # Classic test image
         "mandrill": "mandrill.png",        # Highly detailed - great for showing resolution effects
-        "moon": "moon.tif"                 # Good for showing crater details at lower resolution
+        "smriti": "smriti.png"             # Additional test image
     }
     
     # Parse command line arguments if provided
@@ -170,10 +169,10 @@ def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task4_block_averaging.py [image_name]")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("\nExample:")
     print("  python3 task4_block_averaging.py lena")
-    print("  python3 task4_block_averaging.py moon")
+    print("  python3 task4_block_averaging.py mandrill")
 
 if __name__ == "__main__":
     import sys

@@ -100,10 +100,9 @@ def main():
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "Lenna_(test_image).png",  # Classic test image
-        "cameraman": "cameraman.tif",      # Good for showing rotation effects
+        "lena": "lena_standard.png",      # Classic test image
         "mandrill": "mandrill.png",        # Detailed image
-        "moon": "moon.tif"                 # Circular object - interesting for rotation
+        "smriti": "smriti.png"             # Additional test image
     }
     
     # Parse command line arguments if provided
@@ -176,7 +175,7 @@ def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task3_image_rotation.py [image_name]")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("\nExample:")
     print("  python3 task3_image_rotation.py lena")
     print("  python3 task3_image_rotation.py mandrill")

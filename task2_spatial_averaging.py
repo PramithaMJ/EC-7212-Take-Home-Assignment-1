@@ -85,10 +85,9 @@ def main():
     
     # Define image options with paths relative to the 'images' directory
     image_options = {
-        "lena": "Lenna_(test_image).png",  # Classic test image with good gradients
-        "cameraman": "cameraman.tif",      # Good for showing edge preservation/blurring
+        "lena": "lena_standard.png",      # Classic test image with good gradients
         "mandrill": "mandrill.png",        # Highly textured image
-        "moon": "moon.tif"                 # Good for showing crater details being smoothed
+        "smriti": "smriti.png"             # Additional test image
     }
     
     # Parse command line arguments if provided
@@ -161,10 +160,10 @@ def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task2_spatial_averaging.py [image_name]")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
     print("\nExample:")
     print("  python3 task2_spatial_averaging.py lena")
-    print("  python3 task2_spatial_averaging.py cameraman")
+    print("  python3 task2_spatial_averaging.py mandrill")
 
 if __name__ == "__main__":
     import sys
