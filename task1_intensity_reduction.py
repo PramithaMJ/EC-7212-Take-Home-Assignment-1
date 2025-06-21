@@ -1,11 +1,3 @@
-"""
-Task 1: Intensity Level Reduction
-EC7212 - Computer Vision and Image Processing Assignment
-
-This script reduces the number of intensity levels in an image from 256 to a specified number
-(which must be a power of 2).
-"""
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -56,80 +48,26 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    import sys
+    print("\n=== Intensity Level Reduction ===\n")
     
-    image_options = {
-        "lena": "lena_standard.png",
-        "mandrill": "mandrill.png",
-        "smriti": "smriti.png",
-        "jeep": "jeep.png"
-
-    }
+    selected_image = "lena"
+    image_filename = "lena_standard.png"
     
-    args = sys.argv[1:]
+    max_level = 256
     
-    if len(args) >= 1 and args[0] in image_options:
-        interactive_mode = False
-    else:
-        interactive_mode = True
+    print(f"Using image: lena_standard.png")
     
-    if interactive_mode:
-        print("\n=== Interactive Intensity Level Reduction ===\n")
-        
-        print("Available images:")
-        for i, (name, _) in enumerate(image_options.items(), 1):
-            print(f"  {i}. {name}")
-        
-        while True:
-            try:
-                img_choice = int(input("\nSelect image number: "))
-                if 1 <= img_choice <= len(image_options):
-                    selected_image = list(image_options.keys())[img_choice - 1]
-                    break
-                else:
-                    print(f"Please enter a number between 1 and {len(image_options)}")
-            except ValueError:
-                print("Please enter a valid number")
-        
-        while True:
-            try:
-                desired_level = int(input("\nEnter desired intensity levels (e.g., 2, 4, 8... 256): "))
-                if desired_level > 0 and (desired_level & (desired_level - 1)) == 0 and desired_level <= 256:
-                    break
-                else:
-                    print("Please enter a positive power of 2 no greater than 256")
-            except ValueError:
-                print("Please enter a valid number")
-        
-        max_level = 256
-        min_level = desired_level
-        
-        print(f"\nSelected image: {selected_image}")
-        print(f"Reducing intensity to {desired_level} levels\n")
-    else:
-        # Default values
-        selected_image = "jeep"
-        max_level = 256
-        min_level = 2
-    
-    if len(args) >= 1 and args[0] in image_options:
-        selected_image = args[0]
-        print(f"Using specified image: {selected_image}")
-    
-    if len(args) >= 3:
+    while True:
         try:
-            max_level = int(args[1])
-            min_level = int(args[2])
-            
-            max_level = min(max_level, 256)
-            
-            min_level = max(min_level, 2)
-            
-            print(f"Using specified levels: max={max_level}, min={min_level}")
+            min_level = int(input("\nEnter desired intensity levels (e.g., 2, 4, 8... 256): "))
+            if min_level > 0 and (min_level & (min_level - 1)) == 0 and min_level <= 256:
+                break
+            else:
+                print("Please enter a positive power of 2 no greater than 256")
         except ValueError:
-            print("Invalid level values. Using defaults: max=256, min=2")
+            print("Please enter a valid number")
     
-    image_filename = image_options[selected_image]
+    print(f"Reducing intensity to {min_level} levels\n")
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
@@ -158,12 +96,8 @@ def main():
             
         return levels
     
-    if interactive_mode and max_level > min_level:
-        levels_to_test = [min_level]
-        print(f"Testing single intensity level: {min_level}")
-    else:
-        levels_to_test = generate_intensity_levels(max_level, min_level)
-        print(f"Testing intensity levels: {levels_to_test}")
+    levels_to_test = [min_level]
+    print(f"Testing single intensity level: {min_level}")
     
     intensity_images = [original_image]
     intensity_titles = [f"Original ({max_level} levels)"]
@@ -197,22 +131,5 @@ def main():
     print(f"Results saved as {result_path}")
     print(f"Individual images saved in {task_dir}")
 
-def print_usage():
-    """Print usage instructions"""
-    print("\nUsage: python3 task1_intensity_reduction.py [image_name] [max_level] [min_level]")
-    print("       python3 task1_intensity_reduction.py")
-    print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, mandrill, smriti, jeep)")
-    print("  max_level     : Maximum intensity level (default: 256)")
-    print("  min_level     : Minimum intensity level (default: 2)")
-    print("  [no arguments]: Interactive mode - prompts for image and specific intensity level")
-    print("\nExample:")
-    print("  python3 task1_intensity_reduction.py lena 256 2")
-    print("  python3 task1_intensity_reduction.py")
-
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
-        print_usage()
-    else:
-        main()
+    main()

@@ -1,11 +1,3 @@
-"""
-Task 4: Spatial Resolution Reduction by Block Averaging
-EC7212 - Computer Vision and Image Processing Assignment
-
-This script reduces the spatial resolution of an image by replacing non-overlapping blocks
-with their average values. Implemented for 3x3, 5x5, and 7x7 block sizes.
-"""
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -59,24 +51,12 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    import sys
+    print("\n=== Block Averaging Resolution Reduction ===\n")
     
-    image_options = {
-        "lena": "lena_standard.png",
-        "mandrill": "mandrill.png",
-        "smriti": "smriti.png",
-        "jeep": "jeep.png"
-    }
+    selected_image = "lena"
+    image_filename = "lena_standard.png"
     
-    args = sys.argv[1:]
-    
-    selected_image = "jeep"
-    
-    if len(args) >= 1 and args[0] in image_options:
-        selected_image = args[0]
-        print(f"Using specified image: {selected_image}")
-    
-    image_filename = image_options[selected_image]
+    print(f"Using image: lena_standard.png\n")
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
@@ -123,17 +103,5 @@ def main():
     print(f"Results saved as {result_path}")
     print(f"Individual images saved in {task_dir}")
 
-def print_usage():
-    """Print usage instructions"""
-    print("\nUsage: python3 task4_block_averaging.py [image_name]")
-    print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
-    print("\nExample:")
-    print("  python3 task4_block_averaging.py lena")
-
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
-        print_usage()
-    else:
-        main()
+    main()

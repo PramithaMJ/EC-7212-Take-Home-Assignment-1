@@ -7,24 +7,36 @@ This project implements various image processing operations required for the EC7
 ```
 .
 ├── images/                 # Input images
-│   ├── jeep.png
-│   ├── lena_standard.png
-│   ├── mandrill.png
-│   └── smriti.png
+│   └── lena_standard.png   # Main test image used by all scripts
 ├── results/                # Output images and individual task results
-│   ├── task1_*/            # Task 1 individual results for each image
-│   ├── task2_*/            # Task 2 individual results for each image
-│   ├── task3_*/            # Task 3 individual results for each image
-│   ├── task4_*/            # Task 4 individual results for each image
-│   ├── task1_*_intensity_reduction.png
-│   ├── task2_*_spatial_averaging.png
-│   ├── task3_*_rotation.png
-│   └── task4_*_block_averaging.png
-├── task1_intensity_reduction.py
-├── task2_spatial_averaging.py
-├── task3_image_rotation.py
-├── task4_block_averaging.py
-└── README.md
+│   ├── task1_lena/         # Task 1 individual results (different intensity levels)
+│   │   ├── 128_levels.png
+│   │   ├── 64_levels.png
+│   │   ├── 32_levels.png
+│   │   ├── 16_levels.png
+│   │   ├── 8_levels.png
+│   │   ├── 4_levels.png
+│   │   └── 2_levels.png
+│   ├── task2_lena/         # Task 2 individual results (different kernel sizes)
+│   │   ├── 3x3_Average.png
+│   │   ├── 10x10_Average.png
+│   │   └── 20x20_Average.png
+│   ├── task3_lena/         # Task 3 individual results (different rotation angles)
+│   │   ├── Rotated_45deg.png
+│   │   └── Rotated_90deg.png
+│   ├── task4_lena/         # Task 4 individual results (different block sizes)
+│   │   ├── 3x3_Blocks.png
+│   │   ├── 5x5_Blocks.png
+│   │   └── 7x7_Blocks.png
+│   ├── task1_lena_intensity_reduction.png  # Task 1 combined results
+│   ├── task2_lena_spatial_averaging.png    # Task 2 combined results
+│   ├── task3_lena_rotation.png             # Task 3 combined results
+│   └── task4_lena_block_averaging.png      # Task 4 combined results
+├── task1_intensity_reduction.py  # Task 1 implementation
+├── task2_spatial_averaging.py    # Task 2 implementation
+├── task3_image_rotation.py       # Task 3 implementation
+├── task4_block_averaging.py      # Task 4 implementation
+└── README.md                     # This file
 ```
 
 ## Task Descriptions
@@ -48,73 +60,39 @@ This project implements various image processing operations required for the EC7
 
 ## Running the Scripts
 
+All scripts are now simplified to use the "lena_standard.png" image by default. To run any of the tasks, simply execute the corresponding Python script:
+
 ### Task 1: Intensity Level Reduction
 
-Task 1 runs in interactive mode by default, allowing you to select an image and specific intensity level:
-
 ```bash
-# Run in interactive mode (default)
 python3 task1_intensity_reduction.py
 ```
 
-You can also run in command-line mode by specifying parameters:
-
-```bash
-# Run with command line arguments: image, max_level, min_level
-python3 task1_intensity_reduction.py lena 256 2
-
-# Other examples
-python3 task1_intensity_reduction.py mandrill 256 4
-python3 task1_intensity_reduction.py smriti 256 8
-python3 task1_intensity_reduction.py jeep 256 16
-```
+You'll be prompted to enter a desired intensity level (e.g., 2, 4, 8, 16, 32, 64, 128, or 256). The script will then reduce the Lena image to your specified number of intensity levels and display the results.
 
 ### Task 2: Spatial Averaging
 
 ```bash
-# Run with default image (jeep)
 python3 task2_spatial_averaging.py
-
-# Run with specific image
-python3 task2_spatial_averaging.py lena
-python3 task2_spatial_averaging.py mandrill
-python3 task2_spatial_averaging.py smriti
 ```
+
+This will apply spatial averaging to the Lena image with 3×3, 10×10, and 20×20 kernel sizes.
 
 ### Task 3: Image Rotation
 
 ```bash
-# Run with default image
 python3 task3_image_rotation.py
-
-# Run with specific image
-python3 task3_image_rotation.py lena
-python3 task3_image_rotation.py mandrill
-python3 task3_image_rotation.py smriti
 ```
+
+This will rotate the Lena image by 45° and 90° angles.
 
 ### Task 4: Block Averaging
 
 ```bash
-# Run with default image
 python3 task4_block_averaging.py
-
-# Run with specific image
-python3 task4_block_averaging.py lena
-python3 task4_block_averaging.py mandrill
-python3 task4_block_averaging.py smriti
 ```
 
-### Getting Help
-
-For more detailed usage instructions for any script:
-
-```bash
-python3 task1_intensity_reduction.py -h
-python3 task2_spatial_averaging.py -h
-python3 task3_image_rotation.py -h
-python3 task4_block_averaging.py -h
-```
+This will apply block averaging to the Lena image with 3×3, 5×5, and 7×7 block sizes.
 
 ## Available Images
 
@@ -132,6 +110,53 @@ When you run each script:
 3. Individual processed images are saved in task-specific subdirectories (e.g., `results/task1_lena/`)
 
 ## Requirements
+
+- Python 3.x
+- OpenCV (cv2) - `pip install opencv-python`
+- NumPy - `pip install numpy`
+- Matplotlib - `pip install matplotlib`
+
+## How to Install Dependencies
+
+You can install all the required dependencies using pip:
+
+```bash
+pip install opencv-python numpy matplotlib
+```
+
+## Implementation Details
+
+### Task 1: Intensity Level Reduction
+
+This task reduces the number of intensity levels in an image from 256 (8-bit) to a desired power of 2 level (e.g., 128, 64, 32...). The implementation uses bit manipulation:
+
+1. Calculate the number of bits needed for the desired intensity levels
+2. Use bit shifting to remove the appropriate number of least significant bits
+3. Display the original and reduced images side by side
+
+### Task 2: Spatial Averaging
+
+This task implements spatial averaging (mean filtering) with different kernel sizes:
+
+1. Create averaging kernels of sizes 3×3, 10×10, and 20×20
+2. Apply convolution using cv2.filter2D
+3. Display results showing the effects of different kernel sizes
+
+### Task 3: Image Rotation
+
+This task rotates images by specific angles while preserving all image content:
+
+1. Calculate the new image dimensions to fit the rotated image without cropping
+2. Apply rotation transformation using cv2.warpAffine
+3. Display original and rotated images
+
+### Task 4: Block Averaging
+
+This task reduces spatial resolution by replacing non-overlapping blocks with their average value:
+
+1. Divide the image into non-overlapping blocks of specified size
+2. Replace each block with the average intensity value of all pixels in that block
+3. Display results showing the effects of different block sizes
 
 - Python 3.x
 - OpenCV (cv2)
