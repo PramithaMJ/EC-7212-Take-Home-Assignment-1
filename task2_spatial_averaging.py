@@ -68,7 +68,7 @@ def main():
     }
     
     # Select the image to use
-    selected_image = "cameraman"  # Cameraman is good for showing edge effects
+    selected_image = "lena"  # Cameraman is good for showing edge effects
     image_filename = image_options[selected_image]
     
     # Get absolute paths for images and results folders

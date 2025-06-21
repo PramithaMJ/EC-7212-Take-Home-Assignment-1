@@ -77,7 +77,7 @@ def main():
     }
     
     # Select the image to use
-    selected_image = "mandrill"
+    selected_image = "lena"
     image_filename = image_options[selected_image]
     
     # Get absolute paths for images and results folders

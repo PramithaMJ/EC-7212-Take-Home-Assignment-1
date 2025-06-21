@@ -95,6 +95,13 @@ def main():
         try:
             max_level = int(args[1])
             min_level = int(args[2])
+            
+            # Ensure max_level is 256 or less (8-bit images)
+            max_level = min(max_level, 256)
+            
+            # Ensure min_level is at least 2
+            min_level = max(min_level, 2)
+            
             print(f"Using specified levels: max={max_level}, min={min_level}")
         except ValueError:
             print("Invalid level values. Using defaults: max=256, min=2")
@@ -143,9 +150,8 @@ def main():
             
         return levels
     
-    # Intensity level reduction
-    max_level = 256  # Original image has 256 levels
-    min_level = 2    # Minimum level to reduce to
+    # Intensity level reduction - use the max_level and min_level from command line arguments
+    # Note: These values are already set from command line arguments or defaults
     
     # Generate levels dynamically instead of hardcoding
     levels_to_test = generate_intensity_levels(max_level, min_level)
