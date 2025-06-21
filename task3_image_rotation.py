@@ -1,10 +1,3 @@
-"""
-Task 3: Image Rotation
-EC7212 - Computer Vision and Image Processing Assignment
-
-This script rotates an image by 45 and 90 degrees.
-"""
-
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -64,33 +57,12 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    image_options = {
-        "lena": "lena_standard.png",
-        "mandrill": "mandrill.png",
-        "smriti": "smriti.png",
-        "jeep": "jeep.png" 
-    }
-    
     print("\n=== Image Rotation ===\n")
     
-    print("Available images:")
-    for i, (name, _) in enumerate(image_options.items(), 1):
-        print(f"  {i}. {name}")
+    selected_image = "lena"
+    image_filename = "lena_standard.png"
     
-    while True:
-        try:
-            img_choice = int(input("\nSelect image number: "))
-            if 1 <= img_choice <= len(image_options):
-                selected_image = list(image_options.keys())[img_choice - 1]
-                break
-            else:
-                print(f"Please enter a number between 1 and {len(image_options)}")
-        except ValueError:
-            print("Please enter a valid number")
-    
-    print(f"\nSelected image: {selected_image}\n")
-    
-    image_filename = image_options[selected_image]
+    print(f"Using image: lena_standard.png\n")
     
     current_dir = os.path.dirname(os.path.abspath(__file__))
     images_dir = os.path.join(current_dir, "images")
