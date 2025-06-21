@@ -64,8 +64,6 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
     plt.show()
 
 def main():
-    import sys
-    
     image_options = {
         "lena": "lena_standard.png",
         "mandrill": "mandrill.png",
@@ -73,13 +71,24 @@ def main():
         "jeep": "jeep.png" 
     }
     
-    args = sys.argv[1:]
+    print("\n=== Image Rotation ===\n")
     
-    selected_image = "jeep"
+    print("Available images:")
+    for i, (name, _) in enumerate(image_options.items(), 1):
+        print(f"  {i}. {name}")
     
-    if len(args) >= 1 and args[0] in image_options:
-        selected_image = args[0]
-        print(f"Using specified image: {selected_image}")
+    while True:
+        try:
+            img_choice = int(input("\nSelect image number: "))
+            if 1 <= img_choice <= len(image_options):
+                selected_image = list(image_options.keys())[img_choice - 1]
+                break
+            else:
+                print(f"Please enter a number between 1 and {len(image_options)}")
+        except ValueError:
+            print("Please enter a valid number")
+    
+    print(f"\nSelected image: {selected_image}\n")
     
     image_filename = image_options[selected_image]
     
@@ -128,18 +137,5 @@ def main():
     print(f"Results saved as {result_path}")
     print(f"Individual images saved in {task_dir}")
 
-def print_usage():
-    """Print usage instructions"""
-    print("\nUsage: python3 task3_image_rotation.py [image_name]")
-    print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
-    print("\nExample:")
-    print("  python3 task3_image_rotation.py lena")
-    print("  python3 task3_image_rotation.py mandrill")
-
 if __name__ == "__main__":
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
-        print_usage()
-    else:
-        main()
+    main()

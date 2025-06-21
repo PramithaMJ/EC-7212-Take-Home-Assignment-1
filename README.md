@@ -48,73 +48,41 @@ This project implements various image processing operations required for the EC7
 
 ## Running the Scripts
 
+All scripts now run in interactive mode by default, prompting you to select an image from the available options. To run any of the tasks, simply execute the corresponding Python script:
+
 ### Task 1: Intensity Level Reduction
 
-Task 1 runs in interactive mode by default, allowing you to select an image and specific intensity level:
-
 ```bash
-# Run in interactive mode (default)
 python3 task1_intensity_reduction.py
 ```
 
-You can also run in command-line mode by specifying parameters:
-
-```bash
-# Run with command line arguments: image, max_level, min_level
-python3 task1_intensity_reduction.py lena 256 2
-
-# Other examples
-python3 task1_intensity_reduction.py mandrill 256 4
-python3 task1_intensity_reduction.py smriti 256 8
-python3 task1_intensity_reduction.py jeep 256 16
-```
+You'll be prompted to:
+1. Select an image from the available options (lena, mandrill, smriti, jeep)
+2. Enter a specific intensity level (which must be a power of 2: 2, 4, 8, 16, 32, 64, 128)
 
 ### Task 2: Spatial Averaging
 
 ```bash
-# Run with default image (jeep)
 python3 task2_spatial_averaging.py
-
-# Run with specific image
-python3 task2_spatial_averaging.py lena
-python3 task2_spatial_averaging.py mandrill
-python3 task2_spatial_averaging.py smriti
 ```
+
+You'll be prompted to select an image, and the script will apply spatial averaging with 3×3, 10×10, and 20×20 kernel sizes.
 
 ### Task 3: Image Rotation
 
 ```bash
-# Run with default image
 python3 task3_image_rotation.py
-
-# Run with specific image
-python3 task3_image_rotation.py lena
-python3 task3_image_rotation.py mandrill
-python3 task3_image_rotation.py smriti
 ```
+
+You'll be prompted to select an image, and the script will rotate it by 45° and 90° angles.
 
 ### Task 4: Block Averaging
 
 ```bash
-# Run with default image
 python3 task4_block_averaging.py
-
-# Run with specific image
-python3 task4_block_averaging.py lena
-python3 task4_block_averaging.py mandrill
-python3 task4_block_averaging.py smriti
 ```
 
-### Getting Help
-
-For more detailed usage instructions for any script:
-
-```bash
-python3 task1_intensity_reduction.py -h
-python3 task2_spatial_averaging.py -h
-python3 task3_image_rotation.py -h
-python3 task4_block_averaging.py -h
-```
+You'll be prompted to select an image, and the script will apply block averaging with 3×3, 5×5, and 7×7 block sizes.
 
 ## Available Images
 
