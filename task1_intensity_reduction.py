@@ -11,23 +11,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-def reduce_intensity_levels(image, num_levels):
+def reduce_intensity_levels(image, n_levels):
     """
     Reduce intensity levels from 256 to specified number (power of 2)
     
     Args:
         image (ndarray): Input image
-        num_levels (int): Desired number of intensity levels (must be power of 2)
+        n_levels (int): Desired number of intensity levels (must be power of 2)
         
     Returns:
         ndarray: Image with reduced intensity levels
     """
     # Validate input
-    if num_levels <= 0 or (num_levels & (num_levels - 1)) != 0:
+    if n_levels <= 0 or (n_levels & (n_levels - 1)) != 0:
         raise ValueError("Number of levels must be a positive power of 2")
     
     # Calculate the number of bits needed
-    bits = int(np.log2(num_levels))
+    bits = int(np.log2(n_levels))
     
     # Reduce intensity levels
     # Shift right to reduce bits, then shift left to restore range
@@ -64,6 +64,12 @@ def display_results(images, titles, save_path=None):
     plt.show()
 
 def main():
+    """
+    Main function to run the intensity level reduction
+    Command line usage: python task1_intensity_reduction.py [image_name] [max_level] [min_level]
+    """
+    import sys
+    
     # Define image options with paths relative to the 'images' directory
     image_options = {
         "lena": "Lenna_(test_image).png",  # Classic test image with good gradients
@@ -72,8 +78,27 @@ def main():
         "moon": "moon.tif"                 # Grayscale with interesting features
     }
     
-    # Select the image to use - change this to use a different image
+    # Parse command line arguments if provided
+    args = sys.argv[1:]
+    
+    # Default values
     selected_image = "lena"
+    max_level = 256
+    min_level = 2
+    
+    # Process command line arguments if provided
+    if len(args) >= 1 and args[0] in image_options:
+        selected_image = args[0]
+        print(f"Using specified image: {selected_image}")
+    
+    if len(args) >= 3:
+        try:
+            max_level = int(args[1])
+            min_level = int(args[2])
+            print(f"Using specified levels: max={max_level}, min={min_level}")
+        except ValueError:
+            print("Invalid level values. Using defaults: max=256, min=2")
+    
     image_filename = image_options[selected_image]
     
     # Get absolute paths for images and results folders
@@ -97,16 +122,49 @@ def main():
     
     print(f"Image loaded successfully: {original_image.shape}")
     
-    # Intensity level reduction
-    levels_to_test = [128, 64, 32, 16, 8, 4, 2]
-    intensity_images = [original_image]
-    intensity_titles = ["Original (256 levels)"]
+    # Function to generate intensity levels from max_level down to min_level in powers of 2
+    def generate_intensity_levels(max_level=256, min_level=2):
+        """
+        Generate a list of intensity levels in powers of 2, from max_level down to min_level
+        
+        Args:
+            max_level (int): Maximum intensity level (default: 256)
+            min_level (int): Minimum intensity level (default: 2)
+            
+        Returns:
+            list: List of intensity levels in descending order
+        """
+        levels = []
+        current_level = max_level // 2  # Start from max_level/2 since max_level is the original
+        
+        while current_level >= min_level:
+            levels.append(current_level)
+            current_level = current_level // 2
+            
+        return levels
     
-    for levels in levels_to_test:
-        reduced = reduce_intensity_levels(original_image, levels)
+    # Intensity level reduction
+    max_level = 256  # Original image has 256 levels
+    min_level = 2    # Minimum level to reduce to
+    
+    # Generate levels dynamically instead of hardcoding
+    levels_to_test = generate_intensity_levels(max_level, min_level)
+    print(f"Testing intensity levels: {levels_to_test}")
+    
+    intensity_images = [original_image]
+    intensity_titles = [f"Original ({max_level} levels)"]
+    
+    # Validate intensity levels
+    for level in levels_to_test:
+        if not (level & (level - 1) == 0):  # Check if power of 2
+            print(f"Warning: {level} is not a power of 2, skipping...")
+            continue
+    
+    for n_levels in levels_to_test:
+        reduced = reduce_intensity_levels(original_image, n_levels)
         intensity_images.append(reduced)
-        intensity_titles.append(f"{levels} levels")
-        print(f"Reduced to {levels} intensity levels")
+        intensity_titles.append(f"{n_levels} levels")
+        print(f"Reduced to {n_levels} intensity levels")
     
     # Display and save results
     result_filename = f"task1_{selected_image}_intensity_reduction.png"
@@ -114,5 +172,20 @@ def main():
     display_results(intensity_images, intensity_titles, result_path)
     print(f"Results saved as {result_path}")
 
+def print_usage():
+    """Print usage instructions"""
+    print("\nUsage: python3 task1_intensity_reduction.py [image_name] [max_level] [min_level]")
+    print("\nArguments:")
+    print("  image_name    : Name of the image to use (lena, cameraman, mandrill, moon)")
+    print("  max_level     : Maximum intensity level (default: 256)")
+    print("  min_level     : Minimum intensity level (default: 2)")
+    print("\nExample:")
+    print("  python3 task1_intensity_reduction.py lena 256 2")
+    print("  python3 task1_intensity_reduction.py cameraman 128 1")
+
 if __name__ == "__main__":
-    main()
+    import sys
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
+        print_usage()
+    else:
+        main()
