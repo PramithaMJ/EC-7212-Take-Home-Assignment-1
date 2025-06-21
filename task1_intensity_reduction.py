@@ -75,7 +75,7 @@ def main():
     """
     Main function to run the intensity level reduction
     Command line usage: python task1_intensity_reduction.py [image_name] [max_level] [min_level]
-    Interactive mode: python task1_intensity_reduction.py -i
+    Interactive mode is used by default
     """
     import sys
     
@@ -91,8 +91,15 @@ def main():
     # Parse command line arguments if provided
     args = sys.argv[1:]
     
-    # Check for interactive mode
-    if len(args) >= 1 and args[0] == '-i':
+    # Check for command-line mode (if specific arguments are provided)
+    if len(args) >= 1 and args[0] in image_options:
+        # Use command-line mode
+        interactive_mode = False
+    else:
+        # Default to interactive mode
+        interactive_mode = True
+    
+    if interactive_mode:
         # Interactive mode
         print("\n=== Interactive Intensity Level Reduction ===\n")
         
@@ -205,8 +212,8 @@ def main():
     # Note: These values are already set from command line arguments or defaults
     
     # Check if we're in single-level mode (from interactive input)
-    if '-i' in sys.argv and max_level > min_level:
-        # For interactive single-level mode, just use the specific level
+    if interactive_mode and max_level > min_level:
+        # For interactive mode, just use the specific level
         levels_to_test = [min_level]
         print(f"Testing single intensity level: {min_level}")
     else:
@@ -253,16 +260,16 @@ def main():
 def print_usage():
     """Print usage instructions"""
     print("\nUsage: python3 task1_intensity_reduction.py [image_name] [max_level] [min_level]")
-    print("       python3 task1_intensity_reduction.py -i")
+    print("       python3 task1_intensity_reduction.py")
     print("\nArguments:")
-    print("  image_name    : Name of the image to use (lena, mandrill, smriti)")
+    print("  image_name    : Name of the image to use (lena, mandrill, smriti, jeep)")
     print("  max_level     : Maximum intensity level (default: 256)")
     print("  min_level     : Minimum intensity level (default: 2)")
-    print("  -i            : Interactive mode - prompts for image and specific intensity level")
+    print("  [no arguments]: Interactive mode - prompts for image and specific intensity level")
     print("\nExample:")
     print("  python3 task1_intensity_reduction.py lena 256 2")
     print("  python3 task1_intensity_reduction.py mandrill 256 2")
-    print("  python3 task1_intensity_reduction.py -i")
+    print("  python3 task1_intensity_reduction.py")
 
 if __name__ == "__main__":
     import sys
