@@ -2,9 +2,8 @@
 
 ## Assignment Report
 
-### Student Information
-
-- **Name:** Pramitha Jayasooriya
+- **Name:** Jayasooriya L.P.M.
+- Reg. Number: EG/2020/3990
 - **Date:** June 21, 2025
 
 ## Introduction
@@ -27,6 +26,7 @@ The project follows a structured organization with separate Python files for eac
 ├── images/                 # Input images
 │   ├── lena_standard.png
 │   ├── mandrill.png
+│   ├── jeep.png
 │   └── smriti.png
 ├── results/                # Output images (combined images)
 │   ├── task1_*/            # Individual results for Task 1
@@ -184,10 +184,10 @@ def block_averaging(image, block_size):
         for j in range(0, width - block_size + 1, block_size):
             # Extract block
             block = image[i:i+block_size, j:j+block_size]
-        
+      
             # Calculate average
             avg_value = np.mean(block)
-        
+      
             # Replace all pixels in block with average
             result[i:i+block_size, j:j+block_size] = avg_value
   
@@ -276,7 +276,7 @@ def reduce_intensity_levels(image, n_levels):
     Args:
         image (ndarray): Input image
         n_levels (int): Desired number of intensity levels (must be power of 2)
-    
+  
     Returns:
         ndarray: Image with reduced intensity levels
     """
@@ -315,13 +315,13 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-    
+  
         # Save individual images if requested
         if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
             # Create safe filename from title
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-        
+      
             # Create individual figure and save
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
@@ -370,13 +370,13 @@ def main():
         try:
             max_level = int(args[1])
             min_level = int(args[2])
-        
+      
             # Ensure max_level is 256 or less (8-bit images)
             max_level = min(max_level, 256)
-        
+      
             # Ensure min_level is at least 2
             min_level = max(min_level, 2)
-        
+      
             print(f"Using specified levels: max={max_level}, min={min_level}")
         except ValueError:
             print("Invalid level values. Using defaults: max=256, min=2")
@@ -408,21 +408,21 @@ def main():
     def generate_intensity_levels(max_level=256, min_level=2):
         """
         Generate a list of intensity levels in powers of 2, from max_level down to min_level
-    
+  
         Args:
             max_level (int): Maximum intensity level (default: 256)
             min_level (int): Minimum intensity level (default: 2)
-        
+      
         Returns:
             list: List of intensity levels in descending order
         """
         levels = []
         current_level = max_level // 2  # Start from max_level/2 since max_level is the original
-    
+  
         while current_level >= min_level:
             levels.append(current_level)
             current_level = current_level // 2
-        
+      
         return levels
   
     # Intensity level reduction - use the max_level and min_level from command line arguments
@@ -510,7 +510,7 @@ def spatial_averaging(image, kernel_size):
     Args:
         image (ndarray): Input image
         kernel_size (int): Size of the averaging kernel (e.g., 3, 10, 20)
-    
+  
     Returns:
         ndarray: Spatially averaged image
     """
@@ -544,13 +544,13 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-    
+  
         # Save individual images if requested
         if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
             # Create safe filename from title
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('×', 'x')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-        
+      
             # Create individual figure and save
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
@@ -687,7 +687,7 @@ def rotate_image(image, angle):
     Args:
         image (ndarray): Input image
         angle (float): Rotation angle in degrees
-    
+  
     Returns:
         ndarray: Rotated image
     """
@@ -737,13 +737,13 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-    
+  
         # Save individual images if requested
         if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
             # Create safe filename from title
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('°', 'deg')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-        
+      
             # Create individual figure and save
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
@@ -881,7 +881,7 @@ def block_averaging(image, block_size):
     Args:
         image (ndarray): Input image
         block_size (int): Size of the blocks (e.g., 3, 5, 7)
-    
+  
     Returns:
         ndarray: Image with block averaging applied
     """
@@ -893,10 +893,10 @@ def block_averaging(image, block_size):
         for j in range(0, width - block_size + 1, block_size):
             # Extract block
             block = image[i:i+block_size, j:j+block_size]
-        
+      
             # Calculate average
             avg_value = np.mean(block)
-        
+      
             # Replace all pixels in block with average
             result[i:i+block_size, j:j+block_size] = avg_value
   
@@ -924,13 +924,13 @@ def display_results(images, titles, save_path=None, save_individual=False, indiv
         plt.imshow(img, cmap='gray')
         plt.title(title)
         plt.axis('off')
-    
+  
         # Save individual images if requested
         if save_individual and individual_dir and i > 0:  # Skip original image (i=0)
             # Create safe filename from title
             safe_title = title.replace(' ', '_').replace('(', '').replace(')', '').replace('×', 'x')
             img_path = os.path.join(individual_dir, f"{safe_title}.png")
-        
+      
             # Create individual figure and save
             plt.figure(figsize=(5, 5))
             plt.imshow(img, cmap='gray')
